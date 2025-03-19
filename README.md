@@ -1,12 +1,4 @@
----
-title: "Effortless API Routing in Flutter: Type-Safe, Scalable, and Clean"
-date: "2025-03-19"
-tags: ["flutter"]
-draft: false
-summary: Learn how to manage API routes in Flutter efficiently with RestRoute<T> and NestedRoute<P, T>, ensuring type safety, cleaner code, and easier maintenance for RESTful APIs.
----
-
-## RestRoute Utility Explained
+## Introduction
 
 A simple way to manage API routes in your app with type safety and proper inheritance.
 
@@ -16,7 +8,7 @@ A simple way to manage API routes in your app with type safety and proper inheri
 
 When working with APIs, we often need to construct various URL paths dynamically. Managing these routes manually can lead to errors, inconsistencies, and difficult-to-maintain code.
 
-This utility helps you build API URLs in a structured, type-safe way. Instead of manually writing strings like `"users/123/comments"`, you can use method chains that are checked by the compiler.
+This library helps you build API URLs in a structured, type-safe way. Instead of manually writing strings like `"users/123/comments"`, you can use method chains that are checked by the compiler.
 
 ### Key Improvements in the New Version
 
@@ -27,6 +19,19 @@ The updated implementation addresses several key issues:
 3. **Improved Mixin Support**: The `RestfulMixin` now works with any `BaseRoute`, making it more versatile
 
 ## Basic Usage
+
+### Installation
+
+```dart
+flutter pub add rest_route
+```
+
+This command will add a line to your package's pubspec.yaml file and run an implicit flutter pub get. The added line will look like this:
+
+```yaml
+dependencies:
+    rest_route: ^0.0.1
+```
 
 ### Creating a Simple Route
 
