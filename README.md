@@ -1,22 +1,12 @@
+# RestRoute: Manage API Routes with Type Safety
+
 ## Introduction
 
-A simple way to manage API routes in your app with type safety and proper inheritance.
+RestRoute is a library that helps you create and manage API routes with type safety and proper inheritance. It provides a structured way to build API URLs dynamically.
 
 ## What It Does
 
-`RestRoute<T>` is a base class that helps you create API routes flexibly, allowing you to concatenate paths and add parameters easily. `NestedRoute<P, T>` is used to create child routes, such as "stories/13/comments/5", while maintaining type safety.
-
-When working with APIs, we often need to construct various URL paths dynamically. Managing these routes manually can lead to errors, inconsistencies, and difficult-to-maintain code.
-
-This library helps you build API URLs in a structured, type-safe way. Instead of manually writing strings like `"users/123/comments"`, you can use method chains that are checked by the compiler.
-
-### Key Improvements in the New Version
-
-The updated implementation addresses several key issues:
-
-1. **Proper Type Safety**: Routes now correctly return their concrete types through a `copyWithImpl` method that each subclass must implement
-2. **More Flexible Inheritance**: `NestedRoute` now accepts any `BaseRoute` as a parent, not just `RestRoute`
-3. **Improved Mixin Support**: The `RestfulMixin` now works with any `BaseRoute`, making it more versatile
+When working with APIs, constructing URL paths dynamically can lead to errors and maintenance issues. RestRoute helps you build API URLs in a structured, type-safe way using method chains that are checked by the compiler.
 
 ## Basic Usage
 
@@ -26,7 +16,7 @@ The updated implementation addresses several key issues:
 flutter pub add rest_route
 ```
 
-This command will add a line to your package's pubspec.yaml file and run an implicit flutter pub get. The added line will look like this:
+This will add the dependency to your pubspec.yaml:
 
 ```yaml
 dependencies:
@@ -56,18 +46,15 @@ final profileUrl = userRoute.profile;     // Result: "users/profile"
 final userWithIdUrl = userRoute.id(123);  // Result: "users/123"
 ```
 
-### The copyWithImpl Method
+### Why copyWithImpl is Necessary
 
-In the new implementation, every subclass of `RestRoute` and `NestedRoute` must implement a `copyWithImpl` method. This ensures proper type safety when creating new instances with different paths:
+The `copyWithImpl` method is crucial for type safety. When you create a new route by adding an ID or path segment, you need a new instance of your specific route class. Without `copyWithImpl`, you'd lose the concrete type and end up with just a base `RestRoute` instance.
 
-```dart
-@override
-UserRoute copyWithImpl(String newPath) {
-  return UserRoute(newPath);
-}
-```
+This method ensures that:
 
-This method replaces the previous internal `_copyWith` method and fixes the casting issue in the original implementation.
+1. Type safety is maintained throughout the chain of method calls
+2. Each subclass creates its own concrete type when paths are modified
+3. You can access specific methods on your route class after modifying the path
 
 ### Main Features
 
@@ -76,8 +63,6 @@ This method replaces the previous internal `_copyWith` method and fixes the cast
 -   **Adding query parameters**: `route.withQueryParams({"sort": "asc"})` gives `"resource?sort=asc"`
 
 ### Working with IDs
-
-There are multiple ways to add an ID:
 
 ```dart
 // These all do the same thing:
@@ -182,22 +167,6 @@ users.create;       // "users" (POST - for creating new)
 users.get(123);     // "users/123" (GET - for getting one)
 users.update(123);  // "users/123" (PUT - for updating)
 users.delete(123);  // "users/123" (DELETE - for removing)
-```
-
-### RestfulMixin for All Routes
-
-The updated `RestfulMixin` can be applied to any class that extends `BaseRoute`, making it more versatile:
-
-```dart
-// Works with both RestRoute and NestedRoute
-mixin RestfulMixin on BaseRoute {
-  // RESTful API methods
-  String get(dynamic id) => BaseRoute.joinPaths(path, id.toString());
-  String get create => basePath;
-  String get list => basePath;
-  String update(dynamic id) => BaseRoute.joinPaths(path, id.toString());
-  String delete(dynamic id) => BaseRoute.joinPaths(path, id.toString());
-}
 ```
 
 ## Complete Example
