@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:rest_route/rest_route.dart';
+import 'package:test/test.dart';
 
 abstract class ApiRoutes {
   static final user = UserRoute();
@@ -20,7 +20,7 @@ class UserRoute extends RestRoute<UserRoute> with RestfulMixin {
 
 class PostsRoute extends NestedRoute<UserRoute, PostsRoute> with RestfulMixin {
   PostsRoute(this.parent, [String routePath = ''])
-    : super(parent, 'posts', routePath);
+      : super(parent, 'posts', routePath);
 
   late final comments = CommentsRoute(this);
   final UserRoute parent;
@@ -34,7 +34,7 @@ class PostsRoute extends NestedRoute<UserRoute, PostsRoute> with RestfulMixin {
 class CommentsRoute extends NestedRoute<PostsRoute, CommentsRoute>
     with RestfulMixin {
   CommentsRoute(this.parent, [String routePath = ''])
-    : super(parent, 'comments', routePath);
+      : super(parent, 'comments', routePath);
 
   final PostsRoute parent;
 

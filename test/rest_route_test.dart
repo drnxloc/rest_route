@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:rest_route/rest_route.dart';
+import 'package:test/test.dart';
 
 // Define test routes based on the provided example
 abstract class ApiRoutes {
@@ -33,7 +33,7 @@ class StoryRoute extends RestRoute<StoryRoute> with RestfulMixin {
 class ChapterRoute extends NestedRoute<StoryRoute, ChapterRoute>
     with RestfulMixin {
   ChapterRoute(this.parent, [String routePath = ''])
-    : super(parent, 'chapters', routePath);
+      : super(parent, 'chapters', routePath);
 
   final StoryRoute parent;
 
