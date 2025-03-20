@@ -20,7 +20,7 @@ This will add the dependency to your pubspec.yaml:
 
 ```yaml
 dependencies:
-    rest_route: ^0.0.1
+    rest_route: ^0.0.4
 ```
 
 ### Creating a Simple Route
@@ -32,9 +32,8 @@ class UserRoute extends RestRoute<UserRoute> {
 
   // Required implementation
   @override
-  UserRoute copyWithImpl(String newPath) {
-    return UserRoute(newPath);
-  }
+  UserRoute copyWith(String newPath) => UserRoute(newPath);
+
 
   // Add custom endpoints as needed
   String get profile => join('profile');
@@ -46,9 +45,9 @@ final profileUrl = userRoute.profile;     // Result: "users/profile"
 final userWithIdUrl = userRoute.id(123);  // Result: "users/123"
 ```
 
-### Why copyWithImpl is Necessary
+### Why copyWith is Necessary
 
-The `copyWithImpl` method is crucial for type safety. When you create a new route by adding an ID or path segment, you need a new instance of your specific route class. Without `copyWithImpl`, you'd lose the concrete type and end up with just a base `RestRoute` instance.
+The `copyWith` method is crucial for type safety. When you create a new route by adding an ID or path segment, you need a new instance of your specific route class. Without `copyWith`, you'd lose the concrete type and end up with just a base `RestRoute` instance.
 
 This method ensures that:
 
@@ -101,9 +100,7 @@ class UserRoute extends RestRoute<UserRoute> {
   late final posts = PostsRoute(this);
 
   @override
-  UserRoute copyWithImpl(String newPath) {
-    return UserRoute(newPath);
-  }
+  UserRoute copyWith(String newPath) => UserRoute(newPath);
 }
 
 // Define the nested route
@@ -117,9 +114,7 @@ class PostsRoute extends NestedRoute<UserRoute, PostsRoute> {
   late final comments = CommentsRoute(this);
 
   @override
-  PostsRoute copyWithImpl(String newPath) {
-    return PostsRoute(parent, newPath);
-  }
+  PostsRoute copyWith(String newPath) => PostsRoute(parent, newPath);
 }
 
 class CommentsRoute extends NestedRoute<PostsRoute, CommentsRoute> {
@@ -131,9 +126,7 @@ class CommentsRoute extends NestedRoute<PostsRoute, CommentsRoute> {
   String get featured => join('featured');
 
   @override
-  CommentsRoute copyWithImpl(String newPath) {
-    return CommentsRoute(parent, newPath);
-  }
+  CommentsRoute copyWith(String newPath) => CommentsRoute(parent, newPath);
 }
 
 // Using the nested routes
@@ -156,9 +149,7 @@ class UserRoute extends RestRoute<UserRoute> with RestfulMixin {
   UserRoute([String routePath = '']) : super('users', routePath);
 
   @override
-  UserRoute copyWithImpl(String newPath) {
-    return UserRoute(newPath);
-  }
+  UserRoute copyWith(String newPath) => UserRoute(newPath);
 }
 
 final users = UserRoute();
@@ -185,9 +176,7 @@ class UserRoute extends RestRoute<UserRoute> with RestfulMixin {
   late final settings = SimpleNestedRoute(this, 'settings');
 
   @override
-  UserRoute copyWithImpl(String newPath) {
-    return UserRoute(newPath);
-  }
+  UserRoute copyWith(String newPath) => UserRoute(newPath);
 }
 
 class PostsRoute extends NestedRoute<UserRoute, PostsRoute> with RestfulMixin {
@@ -199,9 +188,7 @@ class PostsRoute extends NestedRoute<UserRoute, PostsRoute> with RestfulMixin {
   late final comments = CommentsRoute(this);
 
   @override
-  PostsRoute copyWithImpl(String newPath) {
-    return PostsRoute(parent, newPath);
-  }
+  PostsRoute copyWith(String newPath) => PostsRoute(parent, newPath);
 }
 
 class CommentsRoute extends NestedRoute<PostsRoute, CommentsRoute>
@@ -215,9 +202,7 @@ class CommentsRoute extends NestedRoute<PostsRoute, CommentsRoute>
   String get report => join('report');
 
   @override
-  CommentsRoute copyWithImpl(String newPath) {
-    return CommentsRoute(parent, newPath);
-  }
+  CommentsRoute copyWith(String newPath) => CommentsRoute(parent, newPath);
 }
 
 // Using in your code
@@ -263,7 +248,7 @@ settings.path;  // "users/1/settings"
 settings('profile').path;  // "users/1/settings/profile"
 ```
 
-Both implement the required `copyWithImpl` method, so you don't need to implement it yourself.
+Both implement the required `copyWith` method, so you don't need to implement it yourself.
 
 ## Testing
 
@@ -295,8 +280,8 @@ test('should handle deep nesting correctly', () {
 
 ## Tips for Good Implementation
 
-1. **Always implement `copyWithImpl`**: This is required for type safety
-2. **Store the parent in nested routes**: This makes it easier to create the `copyWithImpl` method
+1. **Always implement `copyWith`**: This is required for type safety
+2. **Store the parent in nested routes**: This makes it easier to create the `copyWith` method
 3. **Use `late final` for nested routes**: This prevents recreating them every time they're accessed
 4. **Group related endpoints by resource**: Keep your API routes organized
 5. **Use `RestfulMixin` for standard CRUD operations**: Minimize boilerplate code
