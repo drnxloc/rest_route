@@ -18,9 +18,7 @@ class UserRoute extends RestRoute<UserRoute> with RestfulMixin {
   late final settings = SimpleNestedRoute(this, 'settings');
 
   @override
-  UserRoute copyWithImpl(String newPath) {
-    return UserRoute(newPath);
-  }
+  UserRoute copyWith(String newPath) => UserRoute(newPath);
 }
 
 class PostsRoute extends NestedRoute<UserRoute, PostsRoute> with RestfulMixin {
@@ -32,9 +30,7 @@ class PostsRoute extends NestedRoute<UserRoute, PostsRoute> with RestfulMixin {
   late final comments = CommentsRoute(this);
 
   @override
-  PostsRoute copyWithImpl(String newPath) {
-    return PostsRoute(parent, newPath);
-  }
+  PostsRoute copyWith(String newPath) => PostsRoute(parent, newPath);
 }
 
 class CommentsRoute extends NestedRoute<PostsRoute, CommentsRoute>
@@ -48,9 +44,7 @@ class CommentsRoute extends NestedRoute<PostsRoute, CommentsRoute>
   String get report => join('report');
 
   @override
-  CommentsRoute copyWithImpl(String newPath) {
-    return CommentsRoute(parent, newPath);
-  }
+  CommentsRoute copyWith(String newPath) => CommentsRoute(parent, newPath);
 }
 
 // Using in your code

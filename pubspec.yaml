@@ -1,6 +1,6 @@
 name: rest_route
 description: "Manage API routes in Flutter efficiently, ensuring type safety, cleaner code, and easier maintenance for RESTful APIs"
-version: 0.0.4
+version: 0.0.5
 homepage: https://drnxloc.dev
 repository: https://github.com/drnxloc/rest_route
 
