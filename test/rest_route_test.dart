@@ -14,9 +14,7 @@ class AuthRoute extends RestRoute<AuthRoute> {
   String get login => join('login/token');
 
   @override
-  AuthRoute copyWithImpl(String newPath) {
-    return AuthRoute(newPath);
-  }
+  AuthRoute copyWith(String newPath) => AuthRoute(newPath);
 }
 
 class StoryRoute extends RestRoute<StoryRoute> with RestfulMixin {
@@ -25,9 +23,7 @@ class StoryRoute extends RestRoute<StoryRoute> with RestfulMixin {
   late final chapters = ChapterRoute(this);
 
   @override
-  StoryRoute copyWithImpl(String newPath) {
-    return StoryRoute(newPath);
-  }
+  StoryRoute copyWith(String newPath) => StoryRoute(newPath);
 }
 
 class ChapterRoute extends NestedRoute<StoryRoute, ChapterRoute>
@@ -40,9 +36,7 @@ class ChapterRoute extends NestedRoute<StoryRoute, ChapterRoute>
   String get doSomething => join('doSomething');
 
   @override
-  ChapterRoute copyWithImpl(String newPath) {
-    return ChapterRoute(parent, newPath);
-  }
+  ChapterRoute copyWith(String newPath) => ChapterRoute(parent, newPath);
 }
 
 void main() {

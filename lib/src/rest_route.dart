@@ -6,8 +6,7 @@ abstract class BaseRoute {
   static String createQueryString(Map<String, dynamic> params) {
     return params.entries
         .map(
-          (e) =>
-              '${Uri.encodeComponent(e.key)}='
+          (e) => '${Uri.encodeComponent(e.key)}='
               '${Uri.encodeComponent(e.value.toString())}',
         )
         .join('&');
@@ -38,7 +37,8 @@ abstract class BaseRoute {
   }
 }
 
-class RestRoute<T extends RestRoute<T>> extends BaseRoute {
+/// Abstract class for REST routes with a generic type parameter
+abstract class RestRoute<T extends RestRoute<T>> extends BaseRoute {
   const RestRoute(this._routeName, [this._routePath = '']) : super();
 
   final String _routeName;
@@ -54,28 +54,20 @@ class RestRoute<T extends RestRoute<T>> extends BaseRoute {
   /// Creates a new instance with the given id
   T withId(dynamic id) {
     final newPath = id.toString();
-    // This is where the type cast error happens
-    // We can't cast RestRoute<T> to T directly because they're different types
-    return copyWithImpl(newPath);
+    return copyWith(newPath);
   }
 
   /// Minimal method for retrieving a specific resource by id
   String id(dynamic id) => _createPath(id.toString());
 
-  /// Creates a new instance with the given path - base implementation
-  RestRoute<T> _copyWith(String newPath) {
-    return RestRoute<T>(_routeName, newPath);
-  }
-
-  /// Should be implemented by subclasses to return the proper concrete type
-  T copyWithImpl(String newPath) {
-    throw UnimplementedError('Subclasses must override _copyWithImpl');
-  }
+  /// Abstract method that must be implemented by subclasses
+  /// to return the proper concrete type
+  T copyWith(String newPath);
 
   /// Creates a path with the given segment
   String _createPath(String segment) {
     if (segment.isEmpty) return path;
-    final newInstance = _copyWith(segment);
+    final newInstance = copyWith(segment);
     return newInstance.path;
   }
 
@@ -85,22 +77,21 @@ class RestRoute<T extends RestRoute<T>> extends BaseRoute {
   }
 }
 
+/// Simple implementation of RestRoute
 final class SimpleRoute extends RestRoute<SimpleRoute> {
   const SimpleRoute(super._routeName, [super._routePath]);
 
   @override
-  SimpleRoute copyWithImpl(String newPath) {
+  SimpleRoute copyWith(String newPath) {
     return SimpleRoute(_routeName, newPath);
   }
 }
 
-class NestedRoute<
-  ParentT extends BaseRoute,
-  SelfT extends NestedRoute<ParentT, SelfT>
->
-    extends BaseRoute {
+/// Abstract class for nested routes with generic type parameters
+abstract class NestedRoute<ParentT extends BaseRoute,
+    SelfT extends NestedRoute<ParentT, SelfT>> extends BaseRoute {
   const NestedRoute(this._parent, this._routeName, [this._routePath = ''])
-    : super();
+      : super();
 
   final ParentT _parent;
   final String _routeName;
@@ -109,18 +100,12 @@ class NestedRoute<
   /// Creates a new instance with the given id
   SelfT withId(dynamic id) {
     final newPath = id.toString();
-    return copyWithImpl(newPath);
+    return copyWith(newPath);
   }
 
-  /// Creates a new instance with the given path - base implementation
-  NestedRoute<ParentT, SelfT> _copyWith(String newPath) {
-    return NestedRoute<ParentT, SelfT>(_parent, _routeName, newPath);
-  }
-
-  /// Should be implemented by subclasses to return the proper concrete type
-  SelfT copyWithImpl(String newPath) {
-    throw UnimplementedError('Subclasses must override _copyWithImpl');
-  }
+  /// Abstract method that must be implemented by subclasses
+  /// to return the proper concrete type
+  SelfT copyWith(String newPath);
 
   @override
   String get basePath => BaseRoute.joinPaths(_parent.path, _routeName);
@@ -135,7 +120,7 @@ class NestedRoute<
   /// Creates a path with the given segment
   String _createPath(String segment) {
     if (segment.isEmpty) return path;
-    final newInstance = _copyWith(segment);
+    final newInstance = copyWith(segment);
     return newInstance.path;
   }
 
@@ -145,6 +130,7 @@ class NestedRoute<
   }
 }
 
+/// Simple implementation of NestedRoute
 final class SimpleNestedRoute<ParentT extends BaseRoute>
     extends NestedRoute<ParentT, SimpleNestedRoute<ParentT>> {
   const SimpleNestedRoute(
@@ -154,7 +140,7 @@ final class SimpleNestedRoute<ParentT extends BaseRoute>
   ]);
 
   @override
-  SimpleNestedRoute<ParentT> copyWithImpl(String newPath) {
+  SimpleNestedRoute<ParentT> copyWith(String newPath) {
     return SimpleNestedRoute<ParentT>(_parent, _routeName, newPath);
   }
 }
